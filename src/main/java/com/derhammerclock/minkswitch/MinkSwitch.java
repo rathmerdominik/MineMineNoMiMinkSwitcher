@@ -16,7 +16,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.derhammerclock.minkswitch.commands.MinkSwitchCommand;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(MinkSwitch.PROJECT_ID)
 public class MinkSwitch {
     public static final Logger LOGGER = LogManager.getLogger(MinkSwitch.PROJECT_ID);

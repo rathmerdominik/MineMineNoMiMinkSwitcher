@@ -13,6 +13,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
@@ -29,15 +30,25 @@ import xyz.pixelatedw.mineminenomi.packets.server.SSyncEntityStatsPacket;
 import xyz.pixelatedw.mineminenomi.wypi.WyNetwork;
 
 public class MinkSwitchCommand {
-	private static final Logger LOGGER = LogManager.getLogger(MinkSwitch.PROJECT_ID);
+	public static final Logger LOGGER = LogManager.getLogger(MinkSwitch.PROJECT_ID);
 
 	public MinkSwitchCommand(CommandDispatcher<CommandSource> dispatcher) {
 		dispatcher.register(
 				Commands.literal("mink_switch")
+					.executes(MinkSwitchCommand::minkSwitchCui)
+						.then(Commands.literal("i_am_not_a_furry_but_i_am_gay")
+								.requires(context -> {
+									// little easter egg ;} dont be mad
+									return context.hasPermission(4);
+								})
+								.executes(MinkSwitchCommand::iAmNotAFurry))
 						.then(Commands.argument("mink_type", EnumArgument.enumArgument(MINK_TYPE.class))
-								.executes(MinkSwitchCommand::switchMinkType)));
-		dispatcher.register(
-				Commands.literal("mink_switch_cui").executes(MinkSwitchCommand::minkSwitchCui));
+								.executes(MinkSwitchCommand::switchMinkType)
+								.then(Commands.argument("player", EntityArgument.player())
+										.executes(MinkSwitchCommand::switchMinkTypeWithPlayer)
+								)
+							)
+				);
 	}
 
 	private enum MINK_TYPE {
@@ -54,6 +65,12 @@ public class MinkSwitchCommand {
 		public String getMappedValue() {
 			return mappedValue;
 		}
+	}
+
+	public static int iAmNotAFurry(CommandContext<CommandSource> source) {
+		LOGGER.fatal("You are a furry and you are indeed gay!");
+
+		return -1;
 	}
 
 	public static int minkSwitchCui(CommandContext<CommandSource> source) {
@@ -88,37 +105,50 @@ public class MinkSwitchCommand {
 		return 0;
 	}
 
-	public static int switchMinkType(CommandContext<CommandSource> source) {
+	public static int switchMinkType(CommandContext<CommandSource> source) throws CommandSyntaxException{
+		ServerPlayerEntity player = source.getSource().getPlayerOrException();
+
+		return switchMink(source, player);
+	}
+
+	public static int switchMinkTypeWithPlayer(CommandContext<CommandSource> source) throws CommandSyntaxException {
+		ServerPlayerEntity player = EntityArgument.getPlayer(source, "player");
+
+		if (!player.hasPermissions(2)) {
+			source.getSource()
+					.sendFailure(new StringTextComponent("You do not have permission to execute this command with a player argument!"));
+			return -1;
+		}
+
+		return switchMink(source, player);
+	}
+
+	public static int switchMink(CommandContext<CommandSource> source, ServerPlayerEntity player) {
 		MINK_TYPE minkType = source.getArgument("mink_type", MINK_TYPE.class);
 		String stringMinkType = minkType.getMappedValue();
 
-		try {
-			ServerPlayerEntity player = source.getSource().getPlayerOrException();
-			IEntityStats entityProps = EntityStatsCapability.get(player);
-			IAbilityData abilityProps = AbilityDataCapability.get(player);
-			IMinkSwitcher minkProps = MinkSwitcherCapability.get(player);
+		IEntityStats entityProps = EntityStatsCapability.get(player);
+		IAbilityData abilityProps = AbilityDataCapability.get(player);
+		IMinkSwitcher minkProps = MinkSwitcherCapability.get(player);
 
-			// For whatever reason entityProps.isMink() does not work. Wynd pls fix
-			if (!entityProps.isMink()) {
-				source.getSource()
-						.sendFailure(new StringTextComponent("You are not a mink! There is nothing to change."));
-				return -1;
-			}
-
-			if (!CommonConfig.INSTANCE.getSwitchAgain() && minkProps.getMinkSwitched()) {
-				source.getSource().sendFailure(
-						new StringTextComponent("Switching Mink race a second time is disabled in the server config!"));
-				return -1; 
-			}
-
-			entityProps.setSubRace(stringMinkType);
-			minkProps.setMinkSwitched(true);
-
-			WyNetwork.sendToAllTrackingAndSelf(new SSyncEntityStatsPacket(player.getId(), entityProps), player);
-			WyNetwork.sendTo(new SSyncAbilityDataPacket(player.getId(), abilityProps), (ServerPlayerEntity) player);
-		} catch (CommandSyntaxException e) {
-			LOGGER.error(e.getMessage());
+		if (!entityProps.isMink()) {
+			source.getSource()
+					.sendFailure(new StringTextComponent("You are not a mink! There is nothing to change."));
+			return -1;
 		}
+
+		if (!CommonConfig.INSTANCE.getSwitchAgain() && minkProps.getMinkSwitched() && !player.hasPermissions(2)) {
+			source.getSource().sendFailure(
+					new StringTextComponent("Switching Mink race a second time is disabled in the server config!"));
+			return -1;
+		}
+
+		entityProps.setSubRace(stringMinkType);
+		minkProps.setMinkSwitched(true);
+
+		WyNetwork.sendToAllTrackingAndSelf(new SSyncEntityStatsPacket(player.getId(), entityProps), player);
+		WyNetwork.sendTo(new SSyncAbilityDataPacket(player.getId(), abilityProps), (ServerPlayerEntity) player);
+
 		return 0;
 	}
 }

@@ -49,7 +49,7 @@ public class MinkSetEvent {
 		if (event.getEntityStats().isMink()) {
 			if (event.getEntity().getServer() != null) {
 				event.getEntity().getServer().getCommands().performCommand(event.getPlayer().createCommandSourceStack(),
-						"/mink_switch_cui");
+						"/mink_switch");
 			}
 		}
 	}
