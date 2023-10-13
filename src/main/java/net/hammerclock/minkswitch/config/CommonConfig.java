@@ -1,4 +1,4 @@
-package com.derhammerclock.minkswitch.config;
+package net.hammerclock.minkswitch.config;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,7 +30,7 @@ public class CommonConfig {
 
 		CONFIG.setConfig(file);
 	}
-   
+
 	public CommonConfig(ForgeConfigSpec.Builder builder) {
 		this.switchAgain = builder.comment("Defines if a player can switch his mink race again after he switched once.")
 				.define("Allow switching again", false);

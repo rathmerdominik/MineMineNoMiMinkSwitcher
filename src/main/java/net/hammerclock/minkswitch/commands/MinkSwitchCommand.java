@@ -1,12 +1,12 @@
-package com.derhammerclock.minkswitch.commands;
+package net.hammerclock.minkswitch.commands;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.derhammerclock.minkswitch.MinkSwitch;
-import com.derhammerclock.minkswitch.config.CommonConfig;
-import com.derhammerclock.minkswitch.entity.IMinkSwitcher;
-import com.derhammerclock.minkswitch.entity.MinkSwitcherCapability;
+import net.hammerclock.minkswitch.MinkSwitch;
+import net.hammerclock.minkswitch.config.CommonConfig;
+import net.hammerclock.minkswitch.entity.IMinkSwitcher;
+import net.hammerclock.minkswitch.entity.MinkSwitcherCapability;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -35,7 +35,7 @@ public class MinkSwitchCommand {
 	public MinkSwitchCommand(CommandDispatcher<CommandSource> dispatcher) {
 		dispatcher.register(
 				Commands.literal("mink_switch")
-					.executes(MinkSwitchCommand::minkSwitchCui)
+						.executes(MinkSwitchCommand::minkSwitchCui)
 						.then(Commands.literal("i_am_not_a_furry_but_i_am_gay")
 								.requires(context -> {
 									// little easter egg ;} dont be mad
@@ -45,10 +45,7 @@ public class MinkSwitchCommand {
 						.then(Commands.argument("mink_type", EnumArgument.enumArgument(MINK_TYPE.class))
 								.executes(MinkSwitchCommand::switchMinkType)
 								.then(Commands.argument("player", EntityArgument.player())
-										.executes(MinkSwitchCommand::switchMinkTypeWithPlayer)
-								)
-							)
-				);
+										.executes(MinkSwitchCommand::switchMinkTypeWithPlayer))));
 	}
 
 	private enum MINK_TYPE {
@@ -105,7 +102,7 @@ public class MinkSwitchCommand {
 		return 0;
 	}
 
-	public static int switchMinkType(CommandContext<CommandSource> source) throws CommandSyntaxException{
+	public static int switchMinkType(CommandContext<CommandSource> source) throws CommandSyntaxException {
 		ServerPlayerEntity player = source.getSource().getPlayerOrException();
 
 		return switchMink(source, player);
@@ -116,7 +113,8 @@ public class MinkSwitchCommand {
 
 		if (!player.hasPermissions(2)) {
 			source.getSource()
-					.sendFailure(new StringTextComponent("You do not have permission to execute this command with a player argument!"));
+					.sendFailure(new StringTextComponent(
+							"You do not have permission to execute this command with a player argument!"));
 			return -1;
 		}
 

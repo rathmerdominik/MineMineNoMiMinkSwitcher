@@ -1,4 +1,4 @@
-package com.derhammerclock.minkswitch.entity;
+package net.hammerclock.minkswitch.entity;
 
 public interface IMinkSwitcher {
 	Boolean getMinkSwitched();

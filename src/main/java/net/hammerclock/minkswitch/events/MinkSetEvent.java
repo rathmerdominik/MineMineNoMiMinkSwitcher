@@ -1,12 +1,12 @@
-package com.derhammerclock.minkswitch.events;
+package net.hammerclock.minkswitch.events;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.derhammerclock.minkswitch.MinkSwitch;
-import com.derhammerclock.minkswitch.entity.IMinkSwitcher;
-import com.derhammerclock.minkswitch.entity.MinkSwitcherCapability;
-import com.derhammerclock.minkswitch.entity.MinkSwitcherProvider;
+import net.hammerclock.minkswitch.MinkSwitch;
+import net.hammerclock.minkswitch.entity.IMinkSwitcher;
+import net.hammerclock.minkswitch.entity.MinkSwitcherCapability;
+import net.hammerclock.minkswitch.entity.MinkSwitcherProvider;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;

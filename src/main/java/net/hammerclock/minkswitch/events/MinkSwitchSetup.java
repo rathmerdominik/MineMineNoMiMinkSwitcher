@@ -1,10 +1,10 @@
-package com.derhammerclock.minkswitch.events;
+package net.hammerclock.minkswitch.events;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.derhammerclock.minkswitch.MinkSwitch;
-import com.derhammerclock.minkswitch.entity.MinkSwitcherCapability;
+import net.hammerclock.minkswitch.MinkSwitch;
+import net.hammerclock.minkswitch.entity.MinkSwitcherCapability;
 
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

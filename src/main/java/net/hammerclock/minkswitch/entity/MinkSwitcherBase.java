@@ -1,4 +1,4 @@
-package com.derhammerclock.minkswitch.entity;
+package net.hammerclock.minkswitch.entity;
 
 public class MinkSwitcherBase implements IMinkSwitcher {
 	private Boolean minkSwitched = false;

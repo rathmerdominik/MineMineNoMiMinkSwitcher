@@ -1,4 +1,4 @@
-package com.derhammerclock.minkswitch.entity;
+package net.hammerclock.minkswitch.entity;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
