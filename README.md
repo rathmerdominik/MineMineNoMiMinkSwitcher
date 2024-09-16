@@ -1,3 +1,6 @@
+> [!WARNING]  
+> This is in the main mod now. Thus no longer needed
+
 <p align="center">
  <img src="src/main/resources/minkswitch.png" height="500" width="500"/>
 
